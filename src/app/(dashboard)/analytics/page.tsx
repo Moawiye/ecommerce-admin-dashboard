@@ -1,42 +1,53 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Users, Package, ShoppingCart, DollarSign, Calendar } from 'lucide-react';
+import { Calendar, TrendingUp, TrendingDown, Users, ShoppingCart, DollarSign, Package } from 'lucide-react';
 import RevenueChart from '@/components/charts/RevenueChart';
 import SalesByCategoryChart from '@/components/charts/SalesByCategoryChart';
 
-// Mock analytics data
-const mockAnalytics = {
-  totalRevenue: 125000,
-  totalOrders: 1247,
-  totalCustomers: 892,
-  totalProducts: 156,
-  monthlyRevenue: 45000,
-  monthlyGrowth: 12.5,
-  customerGrowth: 8.2,
-  orderGrowth: 15.3,
-  productGrowth: 3.2,
-};
-
+// Mock data
 const mockRevenueData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  revenue: [15000, 18000, 22000, 28000, 35000, 45000, 42000, 48000, 52000, 58000, 65000, 72000],
-};
-
-const mockCategoryData = {
-  categories: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Beauty'],
-  sales: [45000, 32000, 18000, 15000, 10000, 8000],
-};
-
-const mockCustomerData = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  customers: [120, 135, 150, 168, 185, 200],
+  revenue: [12000, 19000, 15000, 25000, 22000, 30000],
 };
+
+const mockStats = [
+  {
+    title: 'Total Revenue',
+    value: '$123,456',
+    change: '+12.5%',
+    changeType: 'positive' as const,
+    icon: DollarSign,
+  },
+  {
+    title: 'Total Orders',
+    value: '1,234',
+    change: '+8.2%',
+    changeType: 'positive' as const,
+    icon: ShoppingCart,
+  },
+  {
+    title: 'Total Customers',
+    value: '5,678',
+    change: '+15.3%',
+    changeType: 'positive' as const,
+    icon: Users,
+  },
+  {
+    title: 'Total Products',
+    value: '234',
+    change: '+3.1%',
+    changeType: 'positive' as const,
+    icon: Package,
+  },
+];
 
 const AnalyticsPage: React.FC = () => {
+  const [dateRange, setDateRange] = useState('7d');
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -44,187 +55,174 @@ const AnalyticsPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-            <p className="text-gray-600">Comprehensive insights into your business performance</p>
+            <p className="text-gray-600">Track your business performance and insights</p>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="outline">
-              <Calendar className="h-4 w-4 mr-2" />
-              Last 30 Days
-            </Button>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="1y">Last year</option>
+            </select>
             <Button>
-              <TrendingUp className="h-4 w-4 mr-2" />
+              <Calendar className="h-4 w-4 mr-2" />
               Export Report
             </Button>
           </div>
         </div>
 
-        {/* Key Metrics */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${mockAnalytics.totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-green-600">
-                +{mockAnalytics.monthlyGrowth}% from last month
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <ShoppingCart className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockAnalytics.totalOrders.toLocaleString()}</div>
-              <p className="text-xs text-blue-600">+{mockAnalytics.orderGrowth}% from last month</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-              <Users className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockAnalytics.totalCustomers.toLocaleString()}</div>
-              <p className="text-xs text-purple-600">+{mockAnalytics.customerGrowth}% from last month</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-              <Package className="h-4 w-4 text-orange-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockAnalytics.totalProducts}</div>
-              <p className="text-xs text-orange-600">+{mockAnalytics.productGrowth}% from last month</p>
-            </CardContent>
-          </Card>
+          {mockStats.map((stat) => (
+            <Card key={stat.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className="h-4 w-4 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="flex items-center text-xs">
+                  {stat.changeType === 'positive' ? (
+                    <TrendingUp className="h-3 w-3 text-green-600 mr-1" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3 text-red-600 mr-1" />
+                  )}
+                  <span className={stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}>
+                    {stat.change}
+                  </span>
+                  <span className="text-gray-500 ml-1">from last month</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Main Charts */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Revenue Chart */}
           <Card>
             <CardHeader>
               <CardTitle>Revenue Trends</CardTitle>
-              <CardDescription>Monthly revenue over the last 12 months</CardDescription>
+              <CardDescription>Monthly revenue performance over time</CardDescription>
             </CardHeader>
             <CardContent>
               <RevenueChart data={mockRevenueData} />
             </CardContent>
           </Card>
 
+          {/* Sales by Category */}
           <Card>
             <CardHeader>
               <CardTitle>Sales by Category</CardTitle>
               <CardDescription>Revenue distribution across product categories</CardDescription>
             </CardHeader>
             <CardContent>
-              <SalesByCategoryChart data={mockCategoryData} />
+              <SalesByCategoryChart />
             </CardContent>
           </Card>
         </div>
 
         {/* Additional Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Top Products */}
           <Card>
             <CardHeader>
-              <CardTitle>Customer Growth</CardTitle>
-              <CardDescription>Monthly customer acquisition trends</CardDescription>
+              <CardTitle>Top Products</CardTitle>
+              <CardDescription>Best performing products this month</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockCustomerData.labels.map((month, index) => (
-                  <div key={month} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">{month}</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-32 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full" 
-                          style={{ width: `${(mockCustomerData.customers[index] / Math.max(...mockCustomerData.customers)) * 100}%` }}
-                        ></div>
+                {[
+                  { name: 'Wireless Headphones', sales: 234, revenue: '$23,400' },
+                  { name: 'Smart Watch', sales: 189, revenue: '$18,900' },
+                  { name: 'Laptop Stand', sales: 156, revenue: '$7,800' },
+                  { name: 'USB Cable', sales: 134, revenue: '$1,340' },
+                  { name: 'Mouse Pad', sales: 98, revenue: '$490' },
+                ].map((product, index) => (
+                  <div key={product.name} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm">
+                        {index + 1}
                       </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {mockCustomerData.customers[index]}
-                      </span>
+                      <div>
+                        <p className="font-medium text-gray-900">{product.name}</p>
+                        <p className="text-sm text-gray-500">{product.sales} sales</p>
+                      </div>
                     </div>
+                    <p className="font-semibold text-gray-900">{product.revenue}</p>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
 
+          {/* Customer Demographics */}
           <Card>
             <CardHeader>
-              <CardTitle>Performance Metrics</CardTitle>
-              <CardDescription>Key performance indicators</CardDescription>
+              <CardTitle>Customer Demographics</CardTitle>
+              <CardDescription>Age and location distribution</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Conversion Rate</span>
-                  <span className="text-sm font-medium text-gray-900">3.2%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Average Order Value</span>
-                  <span className="text-sm font-medium text-gray-900">$100.25</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Customer Lifetime Value</span>
-                  <span className="text-sm font-medium text-gray-900">$450.00</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Return Rate</span>
-                  <span className="text-sm font-medium text-gray-900">2.1%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Inventory Turnover</span>
-                  <span className="text-sm font-medium text-gray-900">4.5x</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Age Groups</p>
+                  <div className="space-y-2">
+                    {[
+                      { age: '18-24', percentage: 25 },
+                      { age: '25-34', percentage: 35 },
+                      { age: '35-44', percentage: 22 },
+                      { age: '45+', percentage: 18 },
+                    ].map((group) => (
+                      <div key={group.age} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">{group.age}</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-600 h-2 rounded-full"
+                              style={{ width: `${group.percentage}%` }}
+                            />
+                          </div>
+                          <span className="text-sm font-medium text-gray-900">{group.percentage}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Top Performers */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Performing Products</CardTitle>
-            <CardDescription>Best-selling products by revenue</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: 'Wireless Bluetooth Headphones', revenue: 12500, units: 125, growth: '+15%' },
-                { name: 'Smart Home Security Camera', revenue: 9800, units: 49, growth: '+8%' },
-                { name: 'Organic Cotton T-Shirt', revenue: 7200, units: 240, growth: '+22%' },
-                { name: 'Programming Fundamentals Book', revenue: 4900, units: 98, growth: '+12%' },
-                { name: 'Yoga Mat Premium', revenue: 3200, units: 80, growth: '+18%' },
-              ].map((product, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">{index + 1}</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{product.name}</p>
-                      <p className="text-sm text-gray-500">{product.units} units sold</p>
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>Latest customer interactions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { action: 'New order placed', customer: 'John Doe', time: '2 min ago' },
+                  { action: 'Payment received', customer: 'Jane Smith', time: '5 min ago' },
+                  { action: 'Product review', customer: 'Mike Johnson', time: '12 min ago' },
+                  { action: 'Customer support', customer: 'Sarah Wilson', time: '18 min ago' },
+                  { action: 'New customer', customer: 'Tom Brown', time: '25 min ago' },
+                ].map((activity, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                      <p className="text-sm text-gray-500">{activity.customer} • {activity.time}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">${product.revenue.toLocaleString()}</p>
-                    <p className="text-sm text-green-600">{product.growth}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

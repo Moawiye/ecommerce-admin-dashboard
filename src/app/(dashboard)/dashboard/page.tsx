@@ -23,11 +23,6 @@ const mockRevenueData = {
   revenue: [15000, 18000, 22000, 28000, 35000, 45000],
 };
 
-const mockCategoryData = {
-  categories: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports'],
-  sales: [45000, 32000, 18000, 15000, 10000],
-};
-
 const DashboardPage: React.FC = () => {
   return (
     <DashboardLayout>
@@ -111,7 +106,7 @@ const DashboardPage: React.FC = () => {
               <CardDescription>Revenue distribution across product categories</CardDescription>
             </CardHeader>
             <CardContent>
-              <SalesByCategoryChart data={mockCategoryData} />
+              <SalesByCategoryChart />
             </CardContent>
           </Card>
         </div>

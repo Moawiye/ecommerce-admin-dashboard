@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Settings, User, Bell, Shield, Palette, Database, Globe } from 'lucide-react';
+import { User, Bell, Shield, Palette, Database } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const [notifications, setNotifications] = useState({

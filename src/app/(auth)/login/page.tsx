@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
       } else {
         router.push('/dashboard');
       }
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
